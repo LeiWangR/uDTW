@@ -74,7 +74,7 @@ for epoch in range(10):
 
 Random seed has been setup for you to reproducing (results shown below). Please ignore the NumbaPerformanceWarning when running on GPU with CUDA.
 
-### On GPU:
+#### On GPU:
 
 ```
 epoch  0  | loss:  0.0022070494
@@ -89,7 +89,7 @@ epoch  8  | loss:  0.0014224321
 epoch  9  | loss:  0.0013002274
 ```
 
-### On CPU:
+#### On CPU:
 
 ```
 epoch  0  | loss:  0.0022070487

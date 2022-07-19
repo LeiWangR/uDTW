@@ -16,16 +16,20 @@ The environment file has been provided in this repo namely as `myenv.yml`. Follo
 
 ## 3. Usage
 
-A sample code has been provided in `example.py`. Here's a quick example:
+A sample code has been provided in `example.py`. Simply type `python3 example.py` in command to run the example codes. Here's a quick example:
 
-
+```python
+s = "Python syntax highlighting"
+print s
+```
 
 
 ## 4. Result
 
-### Results on GPU:
+Random seed has been setup for you to reproducing (results shown below). Please ignore the NumbaPerformanceWarning when running on GPU with CUDA.
 
-Please ignore the NumbaPerformanceWarning.
+### On GPU:
+
 ```
 epoch  0  | loss:  0.0022070494
 epoch  1  | loss:  0.0021751155
@@ -39,7 +43,7 @@ epoch  8  | loss:  0.0014224321
 epoch  9  | loss:  0.0013002274
 ```
 
-### Results on CPU:
+### On CPU:
 
 ```
 epoch  0  | loss:  0.0022070487
@@ -68,4 +72,3 @@ year={2022},
 pages={},
 month={},}
 ```
-

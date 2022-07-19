@@ -19,8 +19,52 @@ The environment file has been provided in this repo namely as `myenv.yml`. Follo
 A sample code has been provided in `example.py`. Simply type `python3 example.py` in command to run the example codes. Here's a quick example:
 
 ```python
-s = "Python syntax highlighting"
-print s
+torch.manual_seed(0)
+# create the sequences
+batch_size, len_x, len_y, dims = 4, 6, 9, 10
+# sequence x & y
+if torch.cuda.is_available():
+    x = torch.rand((batch_size, len_x, dims)).cuda()
+    y = torch.rand((batch_size, len_y, dims)).cuda()
+else:
+    x = torch.rand((batch_size, len_x, dims))
+    y = torch.rand((batch_size, len_y, dims))
+
+# define parameters for scaled sigmoid function
+a = 1.5
+b = 0.5
+
+# a very simple network
+sigmanet = SimpleSigmaNet()
+sigmanet.apply(weight_init)
+
+if torch.cuda.is_available():
+    sigmanet.cuda()
+
+# create the criterion object
+if torch.cuda.is_available():
+    udtw = SoftDTW(use_cuda=True, gamma=0.01, normalize=True)
+else:
+    udtw = SoftDTW(use_cuda=False, gamma=0.01, normalize=True)
+
+# set optimizer
+optimizer = optim.SGD(sigmanet.parameters(), lr=0.5, momentum=0.9)
+
+for epoch in range(10):
+    optimizer.zero_grad()
+
+    sigma_x = sigmanet(x, a, b)
+    sigma_y = sigmanet(y, a, b)
+
+    # Compute the loss value
+    loss_d, loss_s = udtw(x, y, sigma_x, sigma_y, beta = 1)
+    loss = (loss_d.mean() + loss_s.mean()) / (len_x * len_y)
+
+    print('epoch ', epoch, ' | loss: ', '{:.10f}'.format(loss.item()))
+
+    # aggregate and call backward()
+    loss.backward()
+    optimizer.step()
 ```
 
 

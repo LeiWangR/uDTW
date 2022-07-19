@@ -6,6 +6,8 @@ This repo shows a very simple use case of the uncertainty-DTW (uDTW).
 
 The implementation is based on pytorch implementation of soft-DTW (sDTW).
 
+Note that we have solved the issues of using the bandwitdh argument for specifying the Sakoe-Chiba bandwidth for pruning.
+
 ## 2. Setup
 
 The environment file has been provided in this repo namely as `myenv.yml`. Follow the steps below for the environment setup:

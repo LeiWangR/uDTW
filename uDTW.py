@@ -24,7 +24,7 @@ def compute_softdtw_cuda(D, Sig, D_new, Sig_new, gamma, bandwidth, max_i, max_j,
 
     # The row index is always the same as tid
     I = tid
-    
+
     inv_gamma = 1.0 / gamma
 
     # Go over each anti-diagonal. Only process threads that fall on the current on the anti-diagonal
@@ -86,10 +86,10 @@ def compute_softdtw_backward_cuda(D, R, Sig, SigR, inv_gamma, bandwidth, max_i, 
         if I + J == rev_p and (I < max_i and J < max_j):
 
             if math.isinf(R[k, i, j]):
-                R[k, i, j] = -math.inf
+                R[k, i, j] = 0
 
             if math.isinf(SigR[k, i, j]):
-                SigR[k, i, j] = -math.inf
+                SigR[k, i, j] = 0
 
             # Don't compute if outside bandwidth
             if not (abs(i - j) > bandwidth > 0):
@@ -161,19 +161,20 @@ class _SoftDTWCUDA(Function):
         SigR[:, 0, 0] = 0
 
         D_new = torch.zeros((B, N + 2, M + 2), device=dev, dtype=dtype)
-        D_new[:, 1:N+1, 1:M+1] = D
+        D_new[:, 1:N + 1, 1:M + 1] = D
         Sig_new = torch.zeros((B, N + 2, M + 2), device=dev, dtype=dtype)
-        Sig_new[:, 1:N+1, 1:M+1] = Sig
+        Sig_new[:, 1:N + 1, 1:M + 1] = Sig
 
         # Run the CUDA kernel.
         # Set CUDA's grid size to be equal to the batch size (every CUDA block processes one sample pair)
         # Set the CUDA block size to be equal to the length of the longer sequence (equal to the size of the largest diagonal)
-        compute_softdtw_cuda[B, threads_per_block](cuda.as_cuda_array(D.detach()), cuda.as_cuda_array(Sig.detach()),cuda.as_cuda_array(D_new.detach()), cuda.as_cuda_array(Sig_new.detach()),
+        compute_softdtw_cuda[B, threads_per_block](cuda.as_cuda_array(D.detach()), cuda.as_cuda_array(Sig.detach()),
+                                                   cuda.as_cuda_array(D_new.detach()),
+                                                   cuda.as_cuda_array(Sig_new.detach()),
                                                    gamma.item(), bandwidth.item(), N, M, n_passes,
                                                    cuda.as_cuda_array(R), cuda.as_cuda_array(SigR))
 
         ctx.save_for_backward(D, Sig, R.clone(), SigR.clone(), gamma, bandwidth)
-
 
         l1 = D.shape[1]
         l2 = D.shape[2]
@@ -192,9 +193,6 @@ class _SoftDTWCUDA(Function):
 
         else:
             return R[:, -2, -2], SigR[:, -2, -2]
-
-
-
 
     @staticmethod
     def backward(ctx, grad_output1, grad_output2):
@@ -291,10 +289,9 @@ class _SoftDTWCUDA(Function):
 
             SigR[:, -1, -1] = SigR[:, -2, -2]
 
-
-
         # Grid and block sizes are set same as done above for the forward() call
-        compute_softdtw_backward_cuda[B, threads_per_block](cuda.as_cuda_array(D_), cuda.as_cuda_array(R), cuda.as_cuda_array(Sig_), cuda.as_cuda_array(SigR),
+        compute_softdtw_backward_cuda[B, threads_per_block](cuda.as_cuda_array(D_), cuda.as_cuda_array(R),
+                                                            cuda.as_cuda_array(Sig_), cuda.as_cuda_array(SigR),
                                                             1.0 / gamma.item(), bandwidth.item(), N, M, n_passes,
                                                             cuda.as_cuda_array(E), cuda.as_cuda_array(ES))
         E = E[:, 1:N + 1, 1:M + 1]
@@ -325,10 +322,10 @@ def compute_softdtw(D, Sig, gamma, bandwidth):
     alpha = 1.0 / gamma
 
     D_new = np.zeros((B, N + 2, M + 2))
-    D_new[:, 1:N+1, 1:M+1] = D
+    D_new[:, 1:N + 1, 1:M + 1] = D
 
     Sig_new = np.zeros((B, N + 2, M + 2))
-    Sig_new[:, 1:N+1, 1:M+1] = Sig
+    Sig_new[:, 1:N + 1, 1:M + 1] = Sig
 
     for b in range(B):
         for j in range(1, M + 1):
@@ -344,14 +341,15 @@ def compute_softdtw(D, Sig, gamma, bandwidth):
                 rmax = max(max(r0, r1), r2)
                 rsum = np.exp(r0 - rmax) + np.exp(r1 - rmax) + np.exp(r2 - rmax)
 
-                ratio0 = np.exp(r0-rmax) / rsum
-                ratio1 = np.exp(r1-rmax) / rsum
-                ratio2 = np.exp(r2-rmax) / rsum
+                ratio0 = np.exp(r0 - rmax) / rsum
+                ratio1 = np.exp(r1 - rmax) / rsum
+                ratio2 = np.exp(r2 - rmax) / rsum
 
-                softmind =  ratio0 * D_new[b, i - 1, j - 1] + ratio1 * D_new[b, i - 1, j] + ratio2 * D_new[b, i, j - 1]
+                softmind = ratio0 * D_new[b, i - 1, j - 1] + ratio1 * D_new[b, i - 1, j] + ratio2 * D_new[b, i, j - 1]
                 R[b, i, j] = D[b, i - 1, j - 1] + softmind
 
-                softmins = ratio0 * Sig_new[b, i-1, j-1] + ratio1 * Sig_new[b, i-1, j] + ratio2 * Sig_new[b, i, j-1]
+                softmins = ratio0 * Sig_new[b, i - 1, j - 1] + ratio1 * Sig_new[b, i - 1, j] + ratio2 * Sig_new[
+                    b, i, j - 1]
                 SigR[b, i, j] = Sig[b, i - 1, j - 1] + softmins
 
     return R, SigR
@@ -394,15 +392,15 @@ def compute_softdtw_backward(D_, Sig_, R, SigR, gamma, bandwidth):
 
             SigR[:, -1, -1] = SigR[:, -2, -2]
         else:
-            E[:, -1, l1 - l2 + int(bandwidth.item())-1] = 1
-            R[:, :, l1 - l2 + int(bandwidth.item())-1] = 0
+            E[:, -1, l1 - l2 + int(bandwidth.item()) - 1] = 1
+            R[:, :, l1 - l2 + int(bandwidth.item()) - 1] = 0
             R[:, -1, :] = 0
 
             V = R[:, -2, l1 - l2 + int(bandwidth.item()) - 2]
-            R[:, -1, l1 - l2 + int(bandwidth.item())-1] = V
+            R[:, -1, l1 - l2 + int(bandwidth.item()) - 1] = V
             # -----------
             ES[:, -1, l1 - l2 + int(bandwidth.item()) - 1] = 1
-            SigR[:, :, l1 - l2 + int(bandwidth.item()) - 1] =0
+            SigR[:, :, l1 - l2 + int(bandwidth.item()) - 1] = 0
             SigR[:, -1, :] = 0
 
             SigR[:, -1, l1 - l2 + int(bandwidth.item()) - 1] = SigR[:, -2, l1 - l2 + int(bandwidth.item()) - 2]
@@ -422,12 +420,12 @@ def compute_softdtw_backward(D_, Sig_, R, SigR, gamma, bandwidth):
             SigR[:, -1, -1] = SigR[:, -2, -2]
 
         else:
-            E[:, l2 - l1 + int(bandwidth.item())-1, -1] = 1
+            E[:, l2 - l1 + int(bandwidth.item()) - 1, -1] = 1
             R[:, :, -1] = 0
-            R[:, l2 - l1 + int(bandwidth.item())-1, :] = 0
+            R[:, l2 - l1 + int(bandwidth.item()) - 1, :] = 0
 
             V = R[:, l2 - l1 + int(bandwidth.item()) - 2, -2]
-            R[:, l2 - l1 + int(bandwidth.item())-1, -1] = V
+            R[:, l2 - l1 + int(bandwidth.item()) - 1, -1] = V
             # -----------
             ES[:, l2 - l1 + int(bandwidth.item()) - 1, -1] = 1
             SigR[:, :, -1] = 0
@@ -528,14 +526,14 @@ class _SoftDTW(Function):
                 V = R[:, -2, -2]
                 VS = SigR[:, -2, -2]
             else:
-                V = R[:, -2, l1-l2+int(bandwidth.item())-2]
+                V = R[:, -2, l1 - l2 + int(bandwidth.item()) - 2]
                 VS = SigR[:, -2, l1 - l2 + int(bandwidth.item()) - 2]
         elif l1 > l2:
             if bw >= abs(l1 - l2) or bw == 0:
                 V = R[:, -2, -2]
                 VS = SigR[:, -2, -2]
             else:
-                V = R[:, l2-l1+int(bandwidth.item())-2, -2]
+                V = R[:, l2 - l1 + int(bandwidth.item()) - 2, -2]
                 VS = SigR[:, l2 - l1 + int(bandwidth.item()) - 2, -2]
         else:
             V = R[:, -2, -2]

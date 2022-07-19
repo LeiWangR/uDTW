@@ -104,6 +104,8 @@ epoch  8  | loss:  0.0014224334
 epoch  9  | loss:  0.0013002268
 ```
 
+Note that you should get very close/similar results on both GPU and CPU (~1e-8 differences).
+
 ## 5. Citation
 <a name="citation"></a>
 

@@ -1,0 +1,20 @@
+epoch  0  | ------ sDTW loss:  0.1888046563
+epoch  0  | uDTW loss:  0.0022070494
+epoch  1  | ------ sDTW loss:  0.1873034090
+epoch  1  | uDTW loss:  0.0021751155
+epoch  2  | ------ sDTW loss:  0.1844685674
+epoch  2  | uDTW loss:  0.0021154413
+epoch  3  | ------ sDTW loss:  0.1804734319
+epoch  3  | uDTW loss:  0.0020303086
+epoch  4  | ------ sDTW loss:  0.1754882187
+epoch  4  | uDTW loss:  0.0019259036
+epoch  5  | ------ sDTW loss:  0.1696776152
+epoch  5  | uDTW loss:  0.0018087073
+epoch  6  | ------ sDTW loss:  0.1631986946
+epoch  6  | uDTW loss:  0.0016828900
+epoch  7  | ------ sDTW loss:  0.1561995447
+epoch  7  | uDTW loss:  0.0015527449
+epoch  8  | ------ sDTW loss:  0.1488179415
+epoch  8  | uDTW loss:  0.0014224321
+epoch  9  | ------ sDTW loss:  0.1411805749
+epoch  9  | uDTW loss:  0.0013002274

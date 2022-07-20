@@ -559,7 +559,7 @@ class _SoftDTW(Function):
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-class SoftDTW(torch.nn.Module):
+class uDTW(torch.nn.Module):
     """
     The soft DTW implementation that optionally supports CUDA
     """
@@ -573,7 +573,7 @@ class SoftDTW(torch.nn.Module):
                           (as discussed in https://github.com/mblondel/soft-dtw/issues/10#issuecomment-383564790)
         :param bandwidth: Sakoe-Chiba bandwidth for pruning. Passing 'None' will disable pruning.
         """
-        super(SoftDTW, self).__init__()
+        super(uDTW, self).__init__()
         self.normalize = normalize
         self.gamma = gamma
         self.bandwidth = 0 if bandwidth is None else float(bandwidth)

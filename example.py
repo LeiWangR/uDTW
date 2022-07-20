@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 # import uDTW
-from uDTW import SoftDTW
+from uDTW import uDTW
 
 def weight_init(m):
     if isinstance(m, nn.Linear):
@@ -64,9 +64,9 @@ if torch.cuda.is_available():
 
 # create the criterion object
 if torch.cuda.is_available():
-    udtw = SoftDTW(use_cuda=True, gamma=0.01, normalize=True)
+    udtw = uDTW(use_cuda=True, gamma=0.01, normalize=True)
 else:
-    udtw = SoftDTW(use_cuda=False, gamma=0.01, normalize=True)
+    udtw = uDTW(use_cuda=False, gamma=0.01, normalize=True)
 
 # set optimizer
 optimizer = optim.SGD(sigmanet.parameters(), lr=0.5, momentum=0.9)

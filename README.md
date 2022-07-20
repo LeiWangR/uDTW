@@ -6,7 +6,7 @@ This repo shows a very simple use case of the uncertainty-DTW (uDTW).
 
 The implementation is based on pytorch implementation of soft-DTW (sDTW).
 
-Note that we have solved the issues of using the bandwitdh argument in pytorch version of sDTW for specifying the Sakoe-Chiba bandwidth for pruning.
+Note that we have solved the issues of using the bandwitdh argument in pytorch version of sDTW for specifying the Sakoe-Chiba bandwidth for pruning (code attached as `sDTW.py`).
 
 ## 2. Setup
 
@@ -18,6 +18,7 @@ The environment file has been provided in this repo namely as `myenv.yml`. Follo
 
 ## 3. Usage
 
+#### Use uDTW
 A sample code has been provided in `example.py`. Simply type `python3 example.py` in command to run the example codes. Here's a quick example:
 
 ```python
@@ -68,7 +69,9 @@ for epoch in range(10):
     loss.backward()
     optimizer.step()
 ```
+#### uDTW vs. sDTW
 
+A simple code has been provided for comparisons between sDTW and uDTW, simply type `python3 comp.py` in command and run (note that you need to activate the myenv conda environment first).
 
 ## 4. Result
 

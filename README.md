@@ -120,6 +120,6 @@ author={Lei Wang and Piotr Koniusz},
 journal={European Conference on Computer Vision},
 title={Uncertainty-DTW for Time Series and Sequences},
 year={2022},
-pages={},
-month={},}
+pages={176–195},
+month={October},}
 ```

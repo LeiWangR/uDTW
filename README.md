@@ -111,61 +111,6 @@ distance, penalty = criterion(
 `Sigma_X` and `Sigma_Y` are positive standard deviations produced by a
 SigmaNet-style network.
 
-## Pairwise uncertainty
-
-For the additive model in Eq. (8), the pairwise variance is
-
-```text
-Sigma_ij = 0.5 * (sigma_i^2 + sigma'_j^2)
-```
-
-The uncertainty-weighted local cost is
-
-```text
-||x_i - y_j||^2 / Sigma_ij
-```
-
-as specified by Eq. (16). Follows the formal Eq. (3)/(16) definition, the returned beta-weighted penalty uses:
-
-```text
-beta * log(Sigma_ij)
-```
-
-## Core dynamic program
-
-Let
-
-```text
-C_ij = ||x_i-y_j||^2 / Sigma_ij.
-```
-
-The uDTW distance is the SoftMin over complete DTW path costs. The DP is:
-
-```text
-R_ij = C_ij
-       + SoftMin_gamma(
-           R_{i-1,j-1},
-           R_{i-1,j},
-           R_{i,j-1}
-         )
-```
-
-The uncertainty penalty uses the same soft path weights. If
-
-```text
-q_k = SoftMax(-R_pred_k / gamma)
-```
-
-then:
-
-```text
-P_ij = penalty_ij + sum_k q_k P_pred_k
-```
-
-This is the dynamic-programming form of the SoftMinSel definition in Eq. (3):
-the penalty is an expectation under the same soft distribution over paths
-that produces the uDTW distance.
-
 ## Normalization
 
 `normalize=True` uses the standard soft-DTW-style divergence:
@@ -193,19 +138,6 @@ for valid DP cells.
 
 The core paper formulation does not require a bandwidth, so the default is
 `None`.
-
-## Differentiability
-
-Updated implementation uses only PyTorch operations and avoids in-place modification of autograd-tracked DP tensors.
-
-Therefore:
-
-```python
-loss = distance.mean() + penalty.mean()
-loss.backward()
-```
-
-works through both the sequence features and SigmaNet outputs.
 
 ## CPU / GPU
 

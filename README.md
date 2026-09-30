@@ -207,26 +207,6 @@ loss.backward()
 
 works through both the sequence features and SigmaNet outputs.
 
-## Verification
-
-Run:
-
-```bash
-pytest -q
-```
-
-The test suite independently checks:
-
-1. the pairwise variance against Eq. (8);
-2. uDTW distance against exhaustive enumeration of all DTW paths;
-3. the uncertainty penalty against the corresponding exact soft path
-   expectation;
-4. normalized uDTW against its explicit definition;
-5. bandwidth consistency in a case where the full DTW path set is unchanged;
-6. PyTorch `gradcheck`;
-7. finite gradients under `.backward()`;
-8. the singleton boundary case.
-
 ## CPU / GPU
 
 This implementation follows the device of its input tensors, so the
@@ -234,6 +214,8 @@ same code works on CPU or CUDA.
 
 
 ## Citation
+
+If this implementation is useful in your work, please cite the uDTW paper:
 
 ```bibtex
 @inproceedings{wang2022uncertainty,

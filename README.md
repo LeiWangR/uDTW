@@ -1,8 +1,5 @@
 # uDTW
 
-*The code has been optimized with GPT for clarity, readability,
-maintainability, and ease of reuse. An extension of this work is coming soon!* 
-
 ## Scope
 
 This repository implements the mathematical core of uDTW from the paper:

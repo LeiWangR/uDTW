@@ -111,34 +111,6 @@ distance, penalty = criterion(
 `Sigma_X` and `Sigma_Y` are positive standard deviations produced by a
 SigmaNet-style network.
 
-## Normalization
-
-`normalize=True` uses the standard soft-DTW-style divergence:
-
-```text
-uDTW(X,Y) - 0.5[uDTW(X,X) + uDTW(Y,Y)]
-```
-
-for both returned quantities.
-
-This normalization is retained for compatibility with my original API and example. It is a utility option rather than an additional term in
-the paper's core Eq. (2)-(3) definition.
-
-## Bandwidth
-
-`bandwidth=None` disables pruning.
-
-A positive integer uses a standard Sakoe-Chiba constraint:
-
-```text
-abs(i-j) <= bandwidth
-```
-
-for valid DP cells.
-
-The core paper formulation does not require a bandwidth, so the default is
-`None`.
-
 ## CPU / GPU
 
 This implementation follows the device of its input tensors, so the

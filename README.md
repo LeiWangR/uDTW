@@ -56,6 +56,7 @@ python examples/original_style_example.py
 
 A typical output is:
 
+```
 epoch 0 | loss 0.1544207633
 epoch 1 | loss 0.1532181948
 epoch 2 | loss 0.1509874314
@@ -66,7 +67,7 @@ epoch 6 | loss 0.1359462440
 epoch 7 | loss 0.1316862702
 epoch 8 | loss 0.1275756955
 epoch 9 | loss 0.1237251833
-
+```
 
 ## Core API
 

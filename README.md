@@ -1,5 +1,7 @@
 # uDTW
 
+[Torchwarp](https://github.com/hibana2077/torchwarp) is a faster PyTorch implementation of uDTW and JEANIE, providing GPU-accelerated, differentiable sequence alignment with uncertainty-aware DTW and temporal-viewpoint alignment. It includes examples for time-series forecasting on ECG5000 and 5-way 1-shot cross-view action recognition on NW-UCLA, together with optional visualizations of alignment paths.
+
 ## Scope
 
 This repository implements the mathematical core of uDTW from the paper:
